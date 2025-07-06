@@ -3,3 +3,4 @@ class View
         raise NotImplementedError, "Subclasses must implement `getCurrency`"
     end 
 end
+

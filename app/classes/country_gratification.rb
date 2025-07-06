@@ -1,20 +1,22 @@
 class CountryGratification
-    def initialize(currency="CLP",name="Chile",code="chile",gratificationImplementation,viewPathFinder)
+    def initialize(currency="CLP",name="Chile",code="chile",gratificationImplementation,viewHandler)
         @currency = currency
         @name = name
         @code = code
+        @gratificationImplementation = gratificationImplementation
+        @viewHandler = viewHandler
     end    
 
-    def getViewPath
-       viewPathFinder.getPath
+    def getView
+       @viewHandler.getView
     end
 
     def getDetails
-        gratificationImplementation.getDetails(params)
+        @gratificationImplementation.getDetails(params)
     end
 
     def getAmount(params)
-        gratificationImplementation.getAmount(params)
+        @gratificationImplementation.getAmount(params)
     end
 
     def getCurrency

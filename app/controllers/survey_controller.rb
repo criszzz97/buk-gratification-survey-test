@@ -1,9 +1,6 @@
 require 'debug'
 
 class SurveyController < ApplicationController
-  def getView
-    binding.break
-    puts("holaa")
-    render "surveys/_survey"
+  def base_survey
   end
 end

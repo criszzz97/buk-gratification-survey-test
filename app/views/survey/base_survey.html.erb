@@ -1,0 +1,50 @@
+<!-- app/views/surveys/_form.html.erb -->
+<form action="<%= base_survey_path %>" method="get" id="survey-form">
+  <div class="form-group">
+    <label for="country-select">País del colaborador</label>
+    <select
+      id="country-select"
+      name="survey[country]"
+      class="form-control"
+      required
+    >
+      <option value="">– select –</option>
+      <option value="chile">Chile</option>
+      <option value="colombia">Colombia</option>
+      <option value="mexico">México</option>
+    </select>
+  </div>
+
+  <div id="dynamic-fields">
+    <!-- codigo dinamico de de campos -->
+  </div>
+
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const countrySelect = document.getElementById("country-select");
+    countrySelect.addEventListener("change", function() {
+
+      const dynamicFieldToFill = document.getElementById("dynamic-fields");
+      const country = this.value;
+
+      if(!country) {
+        dynamicFieldToFill.innerHTML = ""
+        console.log("No country was selected")
+        return
+      }
+
+      console.log("selected country:", country);
+      fetch(
+        `<%= survey_gratification_path %>?country=${encodeURIComponent(country)}`,
+        { headers: { "Accept": "text/html" } }
+      )
+      .then(r => r.ok ? r.text() : Promise.reject(r.statusText))
+      .then(html => {
+        dynamicFieldToFill.innerHTML = html;
+      })
+      .catch(console.error);
+    });
+  });
+</script>

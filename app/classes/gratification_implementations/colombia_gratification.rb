@@ -1,5 +1,5 @@
 module GratificationImplementations
-    class ChileGratification
+    class ColombiaGratification
         def getDetails(params)
             return "hola"
         end
