@@ -11,7 +11,7 @@ class CountryGratification
        @viewHandler.getView
     end
 
-    def getDetails
+    def getDetails(params)
         @gratificationImplementation.getDetails(params)
     end
 

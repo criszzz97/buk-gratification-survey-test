@@ -9,4 +9,12 @@ class GratificationController < ApplicationController
     render html: html.html_safe
   end
 
+
+  def getDetails
+    factory = GraficationCountryFactory.new
+    country = factory.build(params.require(:input).require(:country))
+    return country.getDetails(params)
+  end
+
+
 end

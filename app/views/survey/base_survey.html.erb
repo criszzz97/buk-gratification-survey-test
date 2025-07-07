@@ -2,12 +2,7 @@
 <form action="<%= base_survey_path %>" method="get" id="survey-form">
   <div class="form-group">
     <label for="country-select">País del colaborador</label>
-    <select
-      id="country-select"
-      name="survey[country]"
-      class="form-control"
-      required
-    >
+    <select id="country-select" name="survey[country]" class="form-control" required>
       <option value="">– select –</option>
       <option value="chile">Chile</option>
       <option value="colombia">Colombia</option>
@@ -19,17 +14,31 @@
     <!-- codigo dinamico de de campos -->
   </div>
 
+  <button type="submit" id="calculate-button" class="btn btn-primary" disabled>Calcular</button>
+
+  <div class="form-group mt-3" id="result-container" style="display: none">
+    <input type="text" readonly class="form-control" id="result-field" value="">
+  </div>
+
 </form>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const countrySelect = document.getElementById("country-select");
-    countrySelect.addEventListener("change", function() {
+    const dynamicFieldToFill = document.getElementById("dynamic-fields");
+    const calculateButton = document.getElementById("calculate-button");
+    const resultContainer = document.getElementById("result-container");
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    var country = "";
 
-      const dynamicFieldToFill = document.getElementById("dynamic-fields");
-      const country = this.value;
+    countrySelect.addEventListener("change", function () {
+      resultContainer.style.display = 'none';
 
-      if(!country) {
+      country = this.value;
+
+      calculateButton.disabled = !country
+
+      if (!country) {
         dynamicFieldToFill.innerHTML = ""
         console.log("No country was selected")
         return
@@ -40,11 +49,55 @@
         `<%= survey_gratification_path %>?country=${encodeURIComponent(country)}`,
         { headers: { "Accept": "text/html" } }
       )
-      .then(r => r.ok ? r.text() : Promise.reject(r.statusText))
-      .then(html => {
-        dynamicFieldToFill.innerHTML = html;
+        .then(r => r.ok ? r.text() : Promise.reject(r.statusText))
+        .then(html => {
+          dynamicFieldToFill.innerHTML = html;
+        })
+        .catch(console.error);
+    });
+
+
+    calculateButton.addEventListener("click", (event) => {
+
+      
+      // If you want to stop the form from actually submitting,
+      // uncomment the next line:
+      event.preventDefault();
+
+      console.log("Calculate button was pressed!");
+
+      const input = Array.from(document.querySelectorAll("[data-dynamic-input]")).reduce((acc, currentValue) => {
+        acc[currentValue.name] = currentValue.value
+        return acc
+      }, {});
+      input["country"] = country;
+      console.log({ input })
+
+      fetch(`<%= calculate_gratification_path %>`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',        // we’re sending JSON
+          'Accept': 'application/json',
+          'X-CSRF-Token': csrfToken 
+        },
+        body: JSON.stringify({input})                // serialize your data
       })
-      .catch(console.error);
+        .then(response => {
+          if (!response.ok) throw new Error(response.statusText);
+          return response.json();                    // parse JSON response
+        })
+        .then(data => {
+          console.log('Got back:', data);
+          // …do something with the server’s reply…
+        })
+        .catch(err => {
+          console.error('The input couldnt be loaded: ', err);
+        });
+
+      resultContainer.style.display = 'block';
+
+      // Put your "on-press" logic here:
+      // e.g. read form values, trigger another fetch, etc.
     });
   });
 </script>

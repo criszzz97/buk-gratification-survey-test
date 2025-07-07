@@ -3,7 +3,7 @@
   "name": "Attach with rdbg",
   "request": "attach",
   "rdbgPath": "/home/cris/.local/share/mise/installs/ruby/3.4.4/lib/ruby/gems/3.4.0/gems/debug-1.11.0/exe/rdbg",
-  "debugPort": "/run/user/1000/rdbg-202485",
+  "debugPort": "/run/user/1000/rdbg-217648",
   "localfs": true,
-  "autoAttach": "0.8579150209527104"
+  "autoAttach": "0.2244051385775192"
 }
