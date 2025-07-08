@@ -8,7 +8,6 @@ class GraficationCountryFactory
   end  
 
   def build(country_code)
-
     country_cfg = @all_cfg[country_code || "chile"] 
     factories = country_cfg[@factories_code]
     country_factory = factories.select { |h| h["isActive"] }.max_by { |h| h["version"] }
@@ -18,7 +17,5 @@ class GraficationCountryFactory
     view_implementation = view_implementation_class.new
     country = ::CountryGratification.new(country_cfg["currency"],country_cfg["name"],country_cfg["code"],gratification_implementation,view_implementation)
     return country
-
-    return country_factory
   end
 end  

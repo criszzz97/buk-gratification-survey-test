@@ -17,7 +17,12 @@
   <button type="submit" id="calculate-button" class="btn btn-primary" disabled>Calcular</button>
 
   <div class="form-group mt-3" id="result-container" style="display: none">
-    <input type="text" readonly class="form-control" id="result-field" value="">
+    <label for="result-label-detail">Detalle</label>
+    <input type="text" readonly class="form-control" id="result-field-detail" value="">
+    <label for="result-label-amount">Monto</label>
+    <input type="text" readonly class="form-control" id="result-field-amount" value="">
+    <label for="result-label-currency">Moneda</label>
+    <input type="text" readonly class="form-control" id="result-field-currency" value="">
   </div>
 
 </form>
@@ -28,7 +33,9 @@
     const dynamicFieldToFill = document.getElementById("dynamic-fields");
     const calculateButton = document.getElementById("calculate-button");
     const resultContainer = document.getElementById("result-container");
-    const resultField = document.getElementById("result-field");
+    const resultFieldDetails = document.getElementById("result-field-detail");
+    const resultFieldAmount = document.getElementById("result-field-amount");
+    const resultFieldCurrency = document.getElementById("result-field-currency");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     var country = "";
 
@@ -36,6 +43,9 @@
       resultContainer.style.display = 'none';
 
       country = this.value;
+      resultFieldDetails.value = "";
+      resultFieldAmount.value = "";
+      resultFieldCurrency.value = "";
 
       calculateButton.disabled = !country
 
@@ -71,11 +81,13 @@
         acc[currentValue.name] = currentValue.value
         return acc
       }, {});
-      
+
       input["country"] = country;
       console.log({ input })
 
       let details = "";
+      let amount = "";
+      let currency = "";
 
       fetch(`<%= calculate_gratification_path %>`, {
         method: 'POST',
@@ -92,8 +104,12 @@
         })
         .then(data => {
           console.log('Got back:', data);
-          details = data?.data || '';
-          resultField.value = details
+          details = data?.data?.details || '';
+          amount = data?.data?.amount || '';
+          currency = data?.data?.currency || '';
+          resultFieldDetails.value = details;
+          resultFieldCurrency.value = currency
+          resultFieldAmount.value = String(amount);
         })
         .catch(err => {
           console.error('The input couldnt be loaded: ', err);

@@ -8,15 +8,15 @@ class CountryGratification
     end    
 
     def getView
-       @viewHandler.getView
+       return @viewHandler.getView
     end
 
-    def getDetails(params)
-        @gratificationImplementation.getDetails(params)
+    def getDetails(input)
+        return @gratificationImplementation.getDetails(input)
     end
 
-    def getAmount(params)
-        @gratificationImplementation.getAmount(params)
+    def getAmount(input)
+        return @gratificationImplementation.getAmount(input)
     end
 
     def getCurrency
