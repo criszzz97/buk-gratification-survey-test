@@ -6,12 +6,12 @@ module GratificationImplementations
             @maximumMonthlyLegalRatio = maximumMonthlyLegalRatio
         end    
         def getDetails(params)
-            monthlyBaseSalary = params.require(:input)[:monthly_base_salary]
-            minimumMonthlyIncome = params.require(:input)[:minimum_monthly_income]
+            monthlyBaseSalary = (params.require(:input)[:monthly_base_salary]).to_f
+            minimumMonthlyIncome = (params.require(:input)[:minimum_monthly_income]).to_f
             percentageStr = (100*@ratioOfAnnualRemuneration).to_s
             annualSalaryGratificationOptionStr = (self.getBaseGratification(monthlyBaseSalary).ceil).to_s
             legalMaximumOptionStr = (self.getMinimumGratification(minimumMonthlyIncome).ceil).to_s
-            return "Desglose: #{percentageString}% del sueldo anual (#{annualSalaryGratificationOption}), tope legal (#{legalMaximumOptionStr}). Se paga el menor."
+            return "Desglose: #{percentageStr.to_i}% del sueldo anual ($#{annualSalaryGratificationOptionStr}), tope legal ($#{legalMaximumOptionStr}). Se paga el menor."
         end
 
         def getAmount(params)

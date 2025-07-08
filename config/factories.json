@@ -1,0 +1,56 @@
+{
+    "chile": {
+        "currency": "CLP",
+        "name": "Chile",
+        "code": "chile",
+        "factories": [
+            {
+                "name": "chile_gratification_v_1",
+                "injects": {
+                    "implementation_class": "ChileGratification",
+                    "implementation_inputs": {},
+                    "view_class": "ViewChile",
+                    "view_inputs": {}
+                },
+                "version": 1,
+                "isActive": true
+            }
+        ]
+    },
+    "colombia": {
+        "currency": "COP",
+        "name": "Colombia",
+        "code": "colombia",
+        "factories": [
+            {
+                "name": "colombia_gratification_v_1",
+                "injects": {
+                    "implementation_class": "ColombiaGratification",
+                    "implementation_inputs": {},
+                    "view_class": "ViewColombia",
+                    "view_inputs": {}
+                },
+                "version": 1,
+                "isActive": true
+            }
+        ]
+    },
+    "mexico": {
+        "currency": "MXN",
+        "name": "México",
+        "code": "mexico",
+        "factories": [
+            {
+                "name": "mexico_gratification_v_1",
+                "injects": {
+                    "implementation_class": "MexicoGratification",
+                    "implementation_inputs": {},
+                    "view_class": "ViewMexico",
+                    "view_inputs": {}
+                },
+                "version": 1,
+                "isActive": true
+            }
+        ]
+    }
+}

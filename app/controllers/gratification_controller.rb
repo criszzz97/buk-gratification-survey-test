@@ -13,7 +13,7 @@ class GratificationController < ApplicationController
   def getDetails
     factory = GraficationCountryFactory.new
     country = factory.build(params.require(:input).require(:country))
-    return country.getDetails(params)
+    render json: {data: country.getDetails(params)}
   end
 
 

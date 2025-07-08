@@ -28,6 +28,7 @@
     const dynamicFieldToFill = document.getElementById("dynamic-fields");
     const calculateButton = document.getElementById("calculate-button");
     const resultContainer = document.getElementById("result-container");
+    const resultField = document.getElementById("result-field");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     var country = "";
 
@@ -70,34 +71,37 @@
         acc[currentValue.name] = currentValue.value
         return acc
       }, {});
+      
       input["country"] = country;
       console.log({ input })
+
+      let details = "";
 
       fetch(`<%= calculate_gratification_path %>`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',        // we’re sending JSON
+          'Content-Type': 'application/json',       
           'Accept': 'application/json',
           'X-CSRF-Token': csrfToken 
         },
-        body: JSON.stringify({input})                // serialize your data
+        body: JSON.stringify({input})               
       })
         .then(response => {
           if (!response.ok) throw new Error(response.statusText);
-          return response.json();                    // parse JSON response
+          return response.json();                   
         })
         .then(data => {
           console.log('Got back:', data);
-          // …do something with the server’s reply…
+          details = data?.data || '';
+          resultField.value = details
         })
         .catch(err => {
           console.error('The input couldnt be loaded: ', err);
         });
 
+
       resultContainer.style.display = 'block';
 
-      // Put your "on-press" logic here:
-      // e.g. read form values, trigger another fetch, etc.
     });
   });
 </script>
