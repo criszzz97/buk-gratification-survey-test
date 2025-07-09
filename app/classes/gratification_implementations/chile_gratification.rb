@@ -6,6 +6,9 @@ module GratificationImplementations
             @maximumMonthlyLegalRatio = maximumMonthlyLegalRatio
         end    
         def getDetails(input)
+            if !input.key?(:monthly_base_salary) or !input.key?(:minimum_monthly_income)
+                raise "Either The \"monthly base salary\" or the \"minimum monthly income\" was not received correctly"
+            end
             monthlyBaseSalary = (input[:monthly_base_salary]).to_f
             minimumMonthlyIncome = (input[:minimum_monthly_income]).to_f
             percentageStr = (100*@ratioOfAnnualRemuneration).to_s
@@ -15,6 +18,9 @@ module GratificationImplementations
         end
 
         def getAmount(input)
+            if !input.key?(:monthly_base_salary) or !input.key?(:minimum_monthly_income)
+                raise "Either The \"monthly base salary\" or the \"minimum monthly income\" was not received correctly"
+            end
             monthlyBaseSalary = (input[:monthly_base_salary]).to_f
             minimumMonthlyIncome = (input[:minimum_monthly_income]).to_f
             baseGratification = self.getBaseGratification(monthlyBaseSalary)

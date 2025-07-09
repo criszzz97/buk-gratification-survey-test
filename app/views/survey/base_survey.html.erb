@@ -1,5 +1,8 @@
 <!-- app/views/surveys/_form.html.erb -->
+<h1>Cálculo de Gratificaciones</h1>
 <form action="<%= base_survey_path %>" method="get" id="survey-form">
+<div id="alerts-container">
+</div>
   <div class="form-group">
     <label for="country-select">País del colaborador</label>
     <select id="country-select" name="survey[country]" class="form-control" required>
@@ -31,19 +34,15 @@
     const dynamicFieldToFill = document.getElementById("dynamic-fields");
     const calculateButton = document.getElementById("calculate-button");
     const resultContainer = document.getElementById("result-container");
-    const resultFieldDetails = document.getElementById("result-field-detail");
-    const resultFieldAmount = document.getElementById("result-field-amount");
-    const resultFieldCurrency = document.getElementById("result-field-currency");
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     var country = "";
 
     countrySelect.addEventListener("change", function () {
+      clearAlerts();
       resultContainer.style.display = 'none';
 
       country = this.value;
-      resultFieldDetails.value = "";
-      resultFieldAmount.value = "";
-      resultFieldCurrency.value = "";
+      setResultValues()
 
       calculateButton.disabled = !country
 
@@ -67,6 +66,7 @@
 
 
     calculateButton.addEventListener("click", (event) => {
+      clearAlerts();
 
       
       // If you want to stop the form from actually submitting,
@@ -75,7 +75,18 @@
 
       console.log("Calculate button was pressed!");
 
-      const input = Array.from(document.querySelectorAll("[data-dynamic-input]")).reduce((acc, currentValue) => {
+      const inputData = Array.from(document.querySelectorAll("[data-dynamic-input]")).map(e => ({id:e.id,name:e.name,value:e.value.trim()}))
+
+      
+      const validationResult = validateInputData(inputData)
+
+      if(!validationResult.valid) {
+        showAlerts(validationResult.errors);
+        console.error(validationResult)
+        return
+      }
+      
+      const input = inputData.reduce((acc, currentValue) => {
         acc[currentValue.name] = currentValue.value
         return acc
       }, {});
@@ -102,12 +113,10 @@
         })
         .then(data => {
           console.log('Got back:', data);
-          details = data?.data?.details || '';
-          amount = data?.data?.amount || '';
-          currency = data?.data?.currency || '';
-          resultFieldDetails.value = details;
-          resultFieldCurrency.value = currency
-          resultFieldAmount.value = String(amount);
+          details = data?.data?.details;
+          amount = data?.data?.amount;
+          currency = data?.data?.currency;
+          setResultValues(details,amount,currency)
         })
         .catch(err => {
           console.error('The input couldnt be loaded: ', err);
@@ -118,4 +127,64 @@
 
     });
   });
+
+  function validateInputData(input) {
+    const errors = []
+    input.forEach(e => {
+      const element = document.getElementById(e.id)
+      if(!e?.value) {
+        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede estar vacio`)
+        return;
+      }
+
+      if(Number(e.value) <= 0) {
+        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede tener un valor menor a cero`)
+        return;
+      } 
+    })
+
+    if(errors.length) {
+      return {valid:false,errors}
+    }
+
+    return {valid:true,errors:[]}
+
+  }
+
+  function setResultValues(detail,amount,currency) {
+    const resultFieldDetails = document.getElementById("result-field-detail");
+    const resultFieldAmount = document.getElementById("result-field-amount");
+    const resultFieldCurrency = document.getElementById("result-field-currency");
+    resultFieldDetails.value = detail || '';
+    resultFieldAmount.value = String(amount ?? '');
+    resultFieldCurrency.value = currency || '';
+
+  }
+
+  function clearAlerts(alertContainerName='alerts-container') {
+    const container = document.getElementById(alertContainerName);
+    container.innerHTML = '';
+    container.style.display = 'none';
+  }
+
+  function showAlerts(messages,alertContainerName='alerts-container') {
+    const container = document.getElementById(alertContainerName);
+
+    // clear out any old alerts
+    container.innerHTML = '';
+    setResultValues()
+
+    messages.forEach(msg => {
+      // build <div class="alert alert-danger"><div>msg</div></div>
+      const alertWrapper = document.createElement('div');
+      alertWrapper.classList.add('alert', 'alert-danger');
+
+      const inner = document.createElement('div');
+      inner.textContent = msg;
+      alertWrapper.appendChild(inner);
+
+      container.appendChild(alertWrapper);
+    });
+    container.style.display = 'block';
+  }
 </script>

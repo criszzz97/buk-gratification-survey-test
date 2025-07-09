@@ -11,6 +11,9 @@ class GraficationCountryFactory
     country_cfg = @all_cfg[country_code.to_sym || "chile"] 
     factories = country_cfg[@factories_code.to_sym]
     country_factory = factories.select { |h| h[:isActive] }.max_by { |h| h[:version] }
+    if !country_factory
+      raise "No valid factory was found for the country code #{country_code || "chile"}"
+    end  
     gratification_implementation_class = @impl_module_name.const_get(country_factory[:injects][:implementation_class])
     gratification_implementation_inputs = country_factory[:injects][:implementation_inputs]
     view_implementation_class = @view_module_name.const_get(country_factory[:injects][:view_class])

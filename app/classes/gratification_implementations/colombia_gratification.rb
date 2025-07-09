@@ -9,6 +9,9 @@ module GratificationImplementations
         end
 
         def getDetails(input)
+            if !input.key?(:monthly_salary) or !input.key?(:worked_days_semester)
+                raise "Either The \"monthly salary\" or the \"worked days in the semester\" was not received correctly"
+            end
             monthlySalary = (input[:monthly_salary]).to_f
             monthlySalaryStr =(monthlySalary.to_i).to_s
             workedDaysSemester = (input[:worked_days_semester]).to_i
@@ -22,6 +25,9 @@ module GratificationImplementations
         end    
 
         def getAmount(input)
+            if !input.key?(:monthly_salary) or !input.key?(:worked_days_semester)
+                raise "Either The \"monthly salary\" or the \"worked days in the semester\" was not received correctly"
+            end
             monthlySalary = (input[:monthly_salary]).to_f
             workedDaysSemester = (input[:worked_days_semester]).to_i
             return self.getGratification(monthlySalary,workedDaysSemester)
