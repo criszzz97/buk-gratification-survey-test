@@ -1,6 +1,6 @@
 module GratificationImplementations
-    class ChileGratification
-        def initialize(ratioOfAnnualRemuneration=0.25,consideredMonths=12,maximumMonthlyLegalRatio=4.75)
+    class ChileGratification < GeneralGratification
+        def initialize(ratioOfAnnualRemuneration:0.25,consideredMonths:12,maximumMonthlyLegalRatio:4.75)
             @ratioOfAnnualRemuneration = ratioOfAnnualRemuneration
             @consideredMonths = consideredMonths
             @maximumMonthlyLegalRatio = maximumMonthlyLegalRatio

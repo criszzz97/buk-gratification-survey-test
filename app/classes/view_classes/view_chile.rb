@@ -1,6 +1,6 @@
 module ViewClasses
     class ViewChile < View
-        def initialize(baseViewFilePath='survey/chile_gratification')
+        def initialize(baseViewFilePath:'survey/chile_gratification')
             @baseViewFilePath = baseViewFilePath
         end
 

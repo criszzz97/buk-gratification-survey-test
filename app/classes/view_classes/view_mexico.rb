@@ -1,12 +1,12 @@
 module ViewClasses
     class ViewMexico < View
-        def initialize(baseViewFilePath=nil)
+        def initialize(baseViewFilePath:'survey/mexico_gratification')
             @baseViewFilePath = baseViewFilePath
         end
 
         def getView
             fieldsView = ApplicationController.renderer.render(
-            partial:  'survey/mexico_gratification'
+            partial:  @baseViewFilePath
             )
             return fieldsView
         end    

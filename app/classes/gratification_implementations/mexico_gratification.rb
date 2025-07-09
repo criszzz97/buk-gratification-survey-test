@@ -1,6 +1,6 @@
 module GratificationImplementations
-    class MexicoGratification
-        def initialize(daysCountedInYear=365,minimumDaysSalaryCountedInYear=15)
+    class MexicoGratification < GeneralGratification
+        def initialize(daysCountedInYear:365,minimumDaysSalaryCountedInYear:15)
             if daysCountedInYear > 365
                 raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be greater that 365"
             end

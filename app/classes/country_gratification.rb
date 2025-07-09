@@ -22,9 +22,5 @@ class CountryGratification
     def getCurrency
         return @currency
     end    
-
-
-#    def getCurrency
-#        raise NotImplementedError, "Subclasses must implement `getCurrency`"
-#    end       
+  
 end
