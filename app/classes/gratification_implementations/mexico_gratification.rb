@@ -5,6 +5,10 @@ module GratificationImplementations
                 raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be greater that 365"
             end
 
+            if daysCountedInYear <= 0
+                raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be equal or lower to 0"
+            end
+
             if minimumDaysSalaryCountedInYear < 0
                 raise "The minimum days counted for gratification calculation cannot be negative"
             end

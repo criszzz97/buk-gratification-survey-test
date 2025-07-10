@@ -12,11 +12,11 @@ class GratificationController < ApplicationController
 
 
   def getDetails
-    countryParam = params.require(:input).require(:country)
-    puts countryParam
+    inputParam = params.require(:input)
+    countryParam = inputParam.require(:country)
     return head :not_found unless countryParam
     country = @factory.build(countryParam)
-    render json: {data: {details:country.getDetails(params.require(:input)),currency:country.getCurrency,amount:country.getAmount(params.require(:input))}}
+    render json: {data: {details:country.getDetails(inputParam),currency:country.getCurrency,amount:country.getAmount(inputParam)}}
   end
 
   def generateFactory

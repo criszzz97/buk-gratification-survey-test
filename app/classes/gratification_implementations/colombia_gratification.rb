@@ -2,7 +2,11 @@ module GratificationImplementations
     class ColombiaGratification < GeneralGratification
         def initialize(daysCountedInYear:360)
             if daysCountedInYear > 365
-                raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be greater that 365"
+                raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be greater than 365"
+            end
+
+            if daysCountedInYear <= 0
+                raise "The days (#{daysCountedInYear}) counted for the year gratification calculation cannot be equal or lower to 0"
             end
 
             @daysCountedInYear = daysCountedInYear

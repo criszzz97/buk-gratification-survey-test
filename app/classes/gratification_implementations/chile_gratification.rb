@@ -4,6 +4,27 @@ module GratificationImplementations
             @ratioOfAnnualRemuneration = ratioOfAnnualRemuneration
             @consideredMonths = consideredMonths
             @maximumMonthlyLegalRatio = maximumMonthlyLegalRatio
+
+            if ratioOfAnnualRemuneration <= 0
+                raise "The ratio of annual remuneration (#{ratioOfAnnualRemuneration}) cannot be equal or lower to 0"
+            end
+
+            if ratioOfAnnualRemuneration > 1
+                raise "The ratio of annual remuneration (#{ratioOfAnnualRemuneration}) cannot be greater than 1"
+            end
+
+            if consideredMonths <= 0
+                raise "The considered months (#{consideredMonths}) cannot be equal or lower to 0"
+            end
+
+            if consideredMonths > 12
+                raise "The considered months (#{consideredMonths}) cannot be greater than 12"
+            end
+
+            if maximumMonthlyLegalRatio <= 0
+                raise "The maximum monthly legal ratio (#{maximumMonthlyLegalRatio}) cannot be equal or lower to 0"
+            end
+
         end    
         def getDetails(input)
             if !input.key?(:monthly_base_salary) or !input.key?(:minimum_monthly_income)
