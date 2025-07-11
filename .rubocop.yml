@@ -1,6 +1,27 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+Layout/SpaceAfterComma:
+  Enabled: false
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+Layout/SpaceAfterColon:
+  Enabled: false
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Layout/TrailingWhitespace:
+  Enabled: false
+Layout/TrailingEmptyLines:
+  Enabled: false
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+Layout/EmptyLinesAroundMethodBody:
+  Enabled: false
+
 Style/RedundantReturn:
   Enabled: false
 
