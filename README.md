@@ -50,12 +50,6 @@ Para configurar este programa se debe tener lo siguiente:
                 - view_class: nombre de la clase que maneja la interacción con la vista del país.
                 - view_inputs: contiene las entradas que se le agregan a la clase que maneja la interacción con la vista del país, cuando esta se instancia (como diccionario).
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
 * Para ejecutar en forma local este archivo se puede realizar lo siguiente:
 
 - Se debe ingresar en el directorio rais del programa (legal-gratification) y se debe ejecutar el comando rails s.
@@ -65,4 +59,99 @@ Para configurar este programa se debe tener lo siguiente:
 
 docker run -p 3001:80 -e SECRET_KEY_BASE={{secret_key}}sha256:e43f3d847cc3fd6c0299eb99bba3aed0ee44cd03050073bbf3b3e3cc26ed95f3
 
-* ...
+```mermaid
+classDiagram
+direction TB
+    class View {
+	    + getView() : String
+    }
+
+    class CountryGratification {
+	    - code: String
+	    - name: String
+	    - viewHandler: View
+	    - gratificationImplementation: GeneralGratification
+	    - currency: String
+	    + initialize(currency : String, name : String, code: String, gratificationImplementation : GeneralGratification, viewHandler : View)
+	    + getName() : String
+	    + getView() : String
+	    + getDetails(input : any) : String
+	    + getCurrency() : String
+	    + getAmount(input : any) : Number
+    }
+
+    class GratificationCountryFactory {
+	    - implViewModuleName : Module
+	    - implModuleName : Module
+	    - factoriesCode : String
+	    - allCfg : Object
+	    - rawCfg : String
+	    + initialize()
+	    + build(countryCode : String) : CountryGratification
+    }
+
+    class ViewMexico {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class ViewChile {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class ViewColombia {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class GeneralGratification {
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+    }
+
+    class MexicoGratification {
+	    - daysCountedInYear : Number
+	    - minimumDaysSalaryCountedInYear : Number
+	    + initialize(minimumDaysSalaryCountedInYear : Number, daysCountedInYear : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getGratification(dailySalary: Number, workedDaysYear : Number) : Number
+    }
+
+    class ChileGratification {
+	    - maximumMonthlyLegalRatio : Number
+	    - consideredMonths : Number
+	    - rationOfAnnualRemuneration : Number
+	    + initialize(ratioOfAnnualRemuneration : Number, consideredMonths : Number, maximumMonthlyLegalRatio : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getBaseGratification(monthlyBaseSalary : Number) : Number
+	    + getMinimumGratification(minimumMonthlyIncome : Number) : Number
+    }
+
+    class ColombiaGratification {
+	    - daysCountedInYear : Number
+	    + initialize(daysCountedInYear : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getGratification(monthlySalary : Number, workedDaysSemester : Number) : Number
+    }
+
+	<<abstract>> View
+	<<abstract>> GeneralGratification
+
+    View <|-- ViewMexico
+    View <|-- ViewChile
+    View <|-- ViewColombia
+    CountryGratification --> View : uses
+    CountryGratification --> GeneralGratification : uses
+    GeneralGratification <|-- MexicoGratification
+    GeneralGratification <|-- ChileGratification
+    GeneralGratification <|-- ColombiaGratification
+    GratificationCountryFactory ..> CountryGratification : creates
+
+
