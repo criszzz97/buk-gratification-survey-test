@@ -4,7 +4,7 @@
 
 ## Tabla de Contenidos
 
-- [Prerequisitos](#prerequisitos) 
+- [Prerrequisitos](#prerrequisitos) 
 - [Descripción](#descripcion)  
 - [Requerimientos](#requerimientos)  
 - [Diseño y Arquitectura](#diseno-y-arquitectura)  
@@ -13,13 +13,12 @@
 - [Configuración](#configuracion)  
 - [Configuración Específica de la Aplicación](#configuracion-especifica)  
 - [Uso local](#uso-local)  
-- [Ejecución con Docker](#ejecución-con-docker)  
-- [Contribuir](#contribuir)  
-- [Licencia](#licencia)
+- [Despliegue en Render](#despliegue-render)  
+
 
 ---
 
-## Prerequisitos <a name="prerequisitos"></a>
+## Prerrequisitos <a name="prerrequisitos"></a>
 
 [![Ruby](https://img.shields.io/badge/Ruby-3.4.4-red)](https://www.ruby-lang.org/)  
 [![Rails](https://img.shields.io/badge/Rails-8.0.2-blue)](https://rubyonrails.org/)  
@@ -30,7 +29,6 @@
 
 `LegalGratification` es una aplicación Rails que genera **formularios dinámicos** y **cálculos de gratificaciones** adaptados al país seleccionado. Emplea los principios SOLID, el patrón **Strategy** para desacoplar vistas y cálculos y utiliza el método **Simple Factory** basado en reflexión para instanciar la estrategia correcta según un archivo JSON de configuración. Esta se realiza específicamente para el test técnico de BUK.
 
-
 ## Requerimientos: <a name="requerimientos"></a>
 
 1. Crear un formulario dinámico, el cual debe cambiar según del país escogido.
@@ -39,7 +37,7 @@
 ## Diseño y Arquitectura <a name="diseno-y-arquitectura"></a>
 
 - Se aplican en forma general los principios **SOLID** e **inyección de dependencias**. 
-- Se utiliza el patrón **Strategy** cambiar vistas (`View`) y lógica de gratificación (`GeneralGratification`) en tiempo de ejecución.  
+- Se utiliza el patrón **Strategy** para cambiar las vistas (`View`) y las lógica de gratificación (`GeneralGratification`) en tiempo de ejecución.  
 - Se aplica un **Simple Factory** (`GratificationCountryFactory`) con reflexión para leer `config/factories.json` y crear instancias de forma dinámica.
 
 El Modelo UML de las clases principales se muestra en el siguiente diagrama mermaid embebido:
@@ -57,16 +55,16 @@ El Modelo UML de las clases principales se muestra en el siguiente diagrama merm
 
 - Se cuentan con las clases `ViewChile`, `ViewColombia` y `ViewMexico` las cuales implementan la clase `View` y se encargan de interactuar con las vistas específicas de "inputs" de cada país.
 
-- Se cuentan con las clases `ChileGratification`, `ColombiaGratification` y `MexicoGratification` las cuales implementan la clase `GeneralGratification` y se encargan de realizar los cálculos y desglloses respectivos para cada páís.
+- Se cuentan con las clases `ChileGratification`, `ColombiaGratification` y `MexicoGratification` las cuales implementan la clase `GeneralGratification` y se encargan de realizar los cálculos y desgloses respectivos para cada páís.
 
 - Se cuenta con la clase `SurveyController`, la cual hereda de la clase `ApplicationController`. Esta recibe requerimmientos provenientes desde el endpoint  `survey` y se encarga de renderizar la primera vista al formulario mediante el método `base_survey`.
 
 - Se cuenta con la clase `GratificationController` la cual hereda de la clase `ApplicationController`. Esta se encarga de procesar requerimientos provenientes de los endpoints `gratification/survey/field` y `gratification/details`, los cuales entregan la vista de los campos  de entrada asociados a un país y procesan las gratificaciones respectivamente mediante los métodos `getView` y `getDetails` respectivamente.
 
 - Se tienen las siguientes rutas:
-    - `survey`: Este endpoint de tipo get se usa para obtener la primera vista del formulario. Esta ruta además es la url raíz.
+    - `survey`: Este endpoint de tipo get se usa para obtener la primera vista del formulario. Se configura además esta ruta como la url raíz.
     - `gratification/survey/fields`: Este endpoint de tipo get se utiliza para obtener los campos asociados a un país especifico, en base al query parameter `country` el cual contiene un código asociado a un país, consistente con el archivo `factories.json`.
-    - `gratification/details` : Este endpoint de tipo post se utiliza para realizar los calculos de gratificaciones para cada país, en su cuerpo recibe un objeto JSON y retorn también un objeto JSON. Por ejemplo una llamada de red de este tipo tendría la siguiente forma.
+    - `gratification/details` : Este endpoint de tipo post se utiliza para realizar los cálculos de gratificaciones para cada país, en su cuerpo recibe un objeto JSON con las entradas ingresadas por el usuario (más el país ingresado en primera instancia) y retorna también un objeto JSON con el desglose del cáculo. Por ejemplo una llamada de red de este tipo tendría la siguiente forma.
 
 ```bash
 curl --location 'http://localhost:3000/gratification/details' \
@@ -84,7 +82,7 @@ Rails.application.routes.draw do
   post "gratification/details" => "gratification#getDetails", as: :calculate_gratification
 end
 ```
-- Por otro lado se implementaron vistas en archivos .html.erb para cada país, las cuales son referenciadas por cada implementación de la clase `View`. Estas tienen la siguiente estructura:
+- Por otro lado se implementaron vistas en archivos .html.erb para cada país, las cuales son referenciadas por cada implementación de la clase `View`. Estas tienen la siguiente estructura (se utilizó como ejemplo la de México):
 
 ```html
   <div class="form-group" data-dynamic-field="true">
@@ -103,26 +101,22 @@ end
 
 - Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la visa "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos.
 
-
-
 ## Instalación <a name="instalacion"></a>
 
 1. **Clonar el repositorio**  
 ```bash
-    git clone https://github.com/tu-org/LegalGratification.git
-   cd LegalGratification
+git clone https://github.com/tu-org/LegalGratification.git
+cd LegalGratification
 ```
 2. **Instalar dependencias Ruby**   
 ```bash
-    bundle install
+bundle install
 ```
 
 3. Instalar dependencias de JavaScript
 ```bash
-    yarn install    # o npm ci
+yarn install    # o npm ci
 ```
-- Se utiliza el comando "rails new LegalGratification" para inciar la aplicación ruby on rails, con todos los archivos que este comando trae por defecto.
-
 
 ## Configuración <a name="configuracion"></a>
 
@@ -143,12 +137,11 @@ rails db:migrate
 
 ## Configuración Específica de la Aplicación <a name="configuracion-especifica"></a>
 
+1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio legal-gratification/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
 
-1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio ${root}/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
+2. Se deben tener creadas las implementaciones (activas) de las gratificaciones en el directorio legal-gratification/app/classes/gratification_implementations. De forma inicial se tienen creadas implementaciones de gratificaciones para Chile, Colombia y México. Estas están asociadas a vistas específicas.
 
-2. Se deben tener creadas las implementaciones (activas) de las gratificaciones en el directorio ${root}/app/classes/gratification_implementations. De forma inicial se tienen creadas implementaciones de gratificaciones para Chile, Colombia y México. Estas están asociadas a vistas específicas.
-
-3. Para configurar este programa se debe tener creado el archvo ``factories.json`` de configuración en la ruta ${root}/config/factories.json. Este debe tener la siguiente estructura:
+3. Para configurar este programa se debe tener creado el archvo ``factories.json`` de configuración en la ruta legal-gratification/config/factories.json. Este debe tener la siguiente estructura:
 
 ```json
 {
@@ -209,9 +202,9 @@ rails db:migrate
 }
 ```
 
-4. En el archivo ${root}/config/factories.json deben estar presentes las configuraciones de las gratificaciones de cada país.
+4. En el archivo legal-gratification/config/factories.json deben estar presentes las configuraciones de las gratificaciones de cada país.
     - En este archivo la llave raíz representa al código estándar que va a tener un país.
-    - En los objetos de cada pais se van a tener los elementos
+    - En los objetos de cada país se van a tener los elementos:
         - currency: código de la moneda.
         - name: nombre visible del país.
         - code: código del país.
@@ -256,6 +249,18 @@ docker run -p 3000:80 \
 ```
 
 3. Finalmente para acceder a la aplicación se debe acceder al enlace ``http://localhost:3000``
+
+## Despliegue en Render <a name="despliegue-render"></a>
+
+1. Para desplegar la app se debe crear un nuevo Web Service utilizando una cuenta de Render, vinculando este repositorio de GitHub.
+
+2. Se debe añadir `SECRET_KEY_BASE=tu_clave_generada` como variable de entorno.
+
+3. Una vez revisada la configuración, se debe seleccionar la opción deploy, lo cual va a finalmente desplegar la aplicación.
+
+actualmente la aplicación fue desplegada con este método y se encuentra en el siguiente enlace:
+
+[https://buk-gratification-survey-test.onrender.com/](https://buk-gratification-survey-test.onrender.com/)
 
 
 
