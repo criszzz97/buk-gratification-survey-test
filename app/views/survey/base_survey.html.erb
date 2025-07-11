@@ -7,7 +7,7 @@
     <label for="country-select">País del colaborador</label>
     <select id="country-select" name="survey[country]" class="form-control" required>
       <option value="">– select –</option>
-      <%= options_for_select(@country_options, params.dig(:survey, :country)) %>
+      <%= options_for_select(@countryOptions, params.dig(:survey, :country)) %>
     </select>
   </div>
 
