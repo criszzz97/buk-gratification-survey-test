@@ -35,8 +35,8 @@ module GratificationImplementations
             monthlyBaseSalary = (input[:monthly_base_salary]).to_f
             minimumMonthlyIncome = (input[:minimum_monthly_income]).to_f
             percentageStr = (100*@ratioOfAnnualRemuneration).to_s
-            annualSalaryGratificationOptionStr = (self.getBaseGratification(monthlyBaseSalary).ceil).to_s
-            legalMaximumOptionStr = (self.getMinimumGratification(minimumMonthlyIncome).ceil).to_s
+            annualSalaryGratificationOptionStr = (self.getBaseGratification(monthlyBaseSalary).to_i).to_s
+            legalMaximumOptionStr = (self.getMinimumGratification(minimumMonthlyIncome).to_i).to_s
             return "Desglose: #{percentageStr.to_i}% del sueldo anual ($#{annualSalaryGratificationOptionStr}), tope legal ($#{legalMaximumOptionStr}). Se paga el menor."
         end
 
@@ -48,7 +48,7 @@ module GratificationImplementations
             baseGratification = self.getBaseGratification(monthlyBaseSalary)
             legalMaximumGratification = self.getMinimumGratification(minimumMonthlyIncome)
             gratificationArray = [baseGratification,legalMaximumGratification]
-            return gratificationArray.min
+            return gratificationArray.min.to_i
         end
 
         # Esta funcion calcula la gratificacion "base" a partir del salario base mensual.
