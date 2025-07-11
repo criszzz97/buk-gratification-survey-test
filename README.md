@@ -166,7 +166,7 @@ direction TB
 
 - En este modelo se utiliza la clase `CountryGratification` para instanciar objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
 
-- Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país. Para realizar esto se lee el archivo `config/factories.json`, Todo esto en base al "código de país" recibido como input en la función `build`.
+- Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país. Para realizar esto se lee el archivo `buk-gratification-survey-test/config/factories.json`, Todo esto en base al "código de país" recibido como input en la función `build`.
 
 - Se cuenta con la clase abstracta `View` la cual se utiliza como intermediario entre la clase `CountryGratification` y las clases que implementan las vistas, esto mediante el método `getView`.
 
@@ -234,11 +234,6 @@ cd LegalGratification
 bundle install
 ```
 
-3. Instalar dependencias de JavaScript
-```bash
-yarn install    # o npm ci
-```
-
 ## Configuración <a name="configuracion"></a>
 
 1. Ejecutar el comando 
@@ -258,11 +253,11 @@ rails db:migrate
 
 ## Configuración Específica de la Aplicación <a name="configuracion-especifica"></a>
 
-1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio legal-gratification/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
+1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio buk-gratification-survey-test/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
 
-2. Se deben tener creadas las implementaciones (activas) de las gratificaciones en el directorio legal-gratification/app/classes/gratification_implementations. De forma inicial se tienen creadas implementaciones de gratificaciones para Chile, Colombia y México. Estas están asociadas a vistas específicas.
+2. Se deben tener creadas las implementaciones (activas) de las gratificaciones en el directorio buk-gratification-survey-test/app/classes/gratification_implementations. De forma inicial se tienen creadas implementaciones de gratificaciones para Chile, Colombia y México. Estas están asociadas a vistas específicas.
 
-3. Para configurar este programa se debe tener creado el archvo ``factories.json`` de configuración en la ruta legal-gratification/config/factories.json. Este debe tener la siguiente estructura:
+3. Para configurar este programa se debe tener creado el archvo ``factories.json`` de configuración en la ruta buk-gratification-survey-test/config/factories.json. Este debe tener la siguiente estructura:
 
 ```json
 {
@@ -323,7 +318,7 @@ rails db:migrate
 }
 ```
 
-4. En el archivo legal-gratification/config/factories.json deben estar presentes las configuraciones de las gratificaciones de cada país.
+4. En el archivo buk-gratification-survey-test/config/factories.json deben estar presentes las configuraciones de las gratificaciones de cada país.
     - En este archivo la llave raíz representa al código estándar que va a tener un país.
     - En los objetos de cada país se van a tener los elementos:
         - currency: código de la moneda.
