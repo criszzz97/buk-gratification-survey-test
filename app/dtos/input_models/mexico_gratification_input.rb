@@ -1,5 +1,5 @@
 module InputModels
-    class MexicoGratificationInput
+    class MexicoGratificationInput < ModelGratificationInput
         include ActiveModel::Model
         include ActiveModel::Attributes
 
@@ -10,9 +10,6 @@ module InputModels
         validates :worked_days_year,  numericality: { less_than: 365, message: "El número de días trabajados en el año no pueden ser mayor a 365" }
         validates :daily_salary,   numericality: { greater_than: 0, message: "El salario diario no puede ser menor a cero" }
 
-        def validate!
-            valid? or raise ActiveModel::ValidationError.new(self)
-        end    
     end
 
 end
