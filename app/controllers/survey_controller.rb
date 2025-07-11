@@ -1,5 +1,3 @@
-require 'debug'
-
 class SurveyController < ApplicationController
   def base_survey
     @rawCfg = File.read(Rails.root.join('config', 'factories.json'))

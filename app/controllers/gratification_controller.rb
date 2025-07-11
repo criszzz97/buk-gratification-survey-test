@@ -1,5 +1,3 @@
-require 'debug'
-
 class GratificationController < ApplicationController
 
   before_action :generateFactory

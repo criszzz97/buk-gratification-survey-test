@@ -5,12 +5,13 @@
 ## Tabla de Contenidos
 
 - [Prerequisitos](#prerequisitos) 
-- [Descripción](#descripción)  
+- [Descripción](#descripcion)  
 - [Requerimientos](#requerimientos)  
-- [Diseño y Arquitectura](#diseño-y-arquitectura)  
-- [Prerrequisitos](#prerrequisitos)  
-- [Instalación](#instalación)  
-- [Configuración](#configuración)  
+- [Diseño y Arquitectura](#diseno-y-arquitectura)  
+- [Implementación](#implementacion)  
+- [Instalación](#instalacion)  
+- [Configuración](#configuracion)  
+- [Configuración Específica de la Aplicación](#configuracion-especifica)  
 - [Uso local](#uso-local)  
 - [Ejecución con Docker](#ejecución-con-docker)  
 - [Contribuir](#contribuir)  
@@ -18,38 +19,93 @@
 
 ---
 
-## Prerequisitos
+## Prerequisitos <a name="prerequisitos"></a>
 
 [![Ruby](https://img.shields.io/badge/Ruby-3.4.4-red)](https://www.ruby-lang.org/)  
 [![Rails](https://img.shields.io/badge/Rails-8.0.2-blue)](https://rubyonrails.org/)  
 [![Docker](https://img.shields.io/badge/Docker-28.0.1-blue)](https://www.docker.com/)  
 [![Node.js](https://img.shields.io/badge/Node–20.8.0-green)](https://nodejs.org/)
 
-## Descripción
+## Descripción <a name="descripcion"></a>
 
-`LegalGratification` es una aplicación Rails que genera **formularios dinámicos** y **cálculos de gratificaciones** adaptados al país seleccionado. Emplea los principios SOLID, el patrón **Strategy** para desacoplar vistas y cálculos y utiliza el método **Simple Factory** basado en reflexión para instanciar la estrategia correcta según un archivo JSON de configuración.
-
----
+`LegalGratification` es una aplicación Rails que genera **formularios dinámicos** y **cálculos de gratificaciones** adaptados al país seleccionado. Emplea los principios SOLID, el patrón **Strategy** para desacoplar vistas y cálculos y utiliza el método **Simple Factory** basado en reflexión para instanciar la estrategia correcta según un archivo JSON de configuración. Esta se realiza específicamente para el test técnico de BUK.
 
 
-## Requerimientos:
+## Requerimientos: <a name="requerimientos"></a>
 
-1. Crear un formulario dinamico, que cambie según del país escogido.
-2. Crear un método de cáclculo dinámico, cuyo resultado y cálculo cambie dinamicamente según el país escogido.
+1. Crear un formulario dinámico, el cual debe cambiar según del país escogido.
+2. Crear un método de cáclculo dinámico, cuyo resultado y cálculo debe cambiar dinámicamente según el país escogido.
 
----
+## Diseño y Arquitectura <a name="diseno-y-arquitectura"></a>
 
-## Diseño y Arquitectura
-
-- Se aplican en forma general los principios **SOLID** y **inyección de dependencias**. 
+- Se aplican en forma general los principios **SOLID** e **inyección de dependencias**. 
 - Se utiliza el patrón **Strategy** cambiar vistas (`View`) y lógica de gratificación (`GeneralGratification`) en tiempo de ejecución.  
 - Se aplica un **Simple Factory** (`GratificationCountryFactory`) con reflexión para leer `config/factories.json` y crear instancias de forma dinámica.
 
 El Modelo UML de las clases principales se muestra en el siguiente diagrama mermaid embebido:
 
----
 
-## Instalación
+## Implementación <a name="implementacion"></a>
+
+- En este modelo se utiliza la clase `CountryGratification` para instancias objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
+
+- Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país, para realizar esto se lee el archivo `config/factories.json`, todo esto en base al "código de país" recibido como input en la función `build`.
+
+- Se cuenta con la clase abstracta `View` la cual se utiliza como intermediario entre la clase `CountryGratification` y las clases que implementan las vistas, esto mediante el método `getView`.
+
+- Se cuenta con la clase abstracta `GeneralGratification` cuyo objetivo es actuar como intermediaria entre la clase `CountryGratification` y las clases que implementan las gratificationes, esto mediante los métodos `getDetails(input)` y `getAmount(input)`.
+
+- Se cuentan con las clases `ViewChile`, `ViewColombia` y `ViewMexico` las cuales implementan la clase `View` y se encargan de interactuar con las vistas específicas de "inputs" de cada país.
+
+- Se cuentan con las clases `ChileGratification`, `ColombiaGratification` y `MexicoGratification` las cuales implementan la clase `GeneralGratification` y se encargan de realizar los cálculos y desglloses respectivos para cada páís.
+
+- Se cuenta con la clase `SurveyController`, la cual hereda de la clase `ApplicationController`. Esta recibe requerimmientos provenientes desde el endpoint  `survey` y se encarga de renderizar la primera vista al formulario mediante el método `base_survey`.
+
+- Se cuenta con la clase `GratificationController` la cual hereda de la clase `ApplicationController`. Esta se encarga de procesar requerimientos provenientes de los endpoints `gratification/survey/field` y `gratification/details`, los cuales entregan la vista de los campos  de entrada asociados a un país y procesan las gratificaciones respectivamente mediante los métodos `getView` y `getDetails` respectivamente.
+
+- Se tienen las siguientes rutas:
+    - `survey`: Este endpoint de tipo get se usa para obtener la primera vista del formulario. Esta ruta además es la url raíz.
+    - `gratification/survey/fields`: Este endpoint de tipo get se utiliza para obtener los campos asociados a un país especifico, en base al query parameter `country` el cual contiene un código asociado a un país, consistente con el archivo `factories.json`.
+    - `gratification/details` : Este endpoint de tipo post se utiliza para realizar los calculos de gratificaciones para cada país, en su cuerpo recibe un objeto JSON y retorn también un objeto JSON. Por ejemplo una llamada de red de este tipo tendría la siguiente forma.
+
+```bash
+curl --location 'http://localhost:3000/gratification/details' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--header 'X-CSRF-Token: {{X-CSRF-Token}}' \
+--data '{"input":{"monthly_base_salary":"2000000","minimum_monthly_income":"2000","country":"chile"}}'
+```
+
+```ruby
+Rails.application.routes.draw do
+  root to: 'survey#base_survey'
+  get "survey" => "survey#base_survey", as: :base_survey
+  get "gratification/survey/fields" => "gratification#getView", as: :survey_gratification
+  post "gratification/details" => "gratification#getDetails", as: :calculate_gratification
+end
+```
+- Por otro lado se implementaron vistas en archivos .html.erb para cada país, las cuales son referenciadas por cada implementación de la clase `View`. Estas tienen la siguiente estructura:
+
+```html
+  <div class="form-group" data-dynamic-field="true">
+    <label for="daily_salary_label">Salario diario</label>
+    <input type="number" class="form-control" id="daily_salary" name="daily_salary" data-dynamic-input="true">
+  </div>
+  <div class="form-group" data-dynamic-field="true">
+    <label for="worked_days_year_label">Días trabajados en el año</label>
+    <input type="number" class="form-control" id="worked_days_year" name="worked_days_year" data-dynamic-input="true">
+  </div>
+```
+
+- Donde para que las vistas funcionen se debe cumplir:
+    - Cada elemento de clase `form-group` debe tener lo siguiente `data-dynamic-field="true"`.
+    - Cada elemento de clase `form-control` debe tener un id único que no se debe repetir en ninguna otra vista y debe tener lo siguiente `data-dynamic-input="true"`.
+
+- Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la visa "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos.
+
+
+
+## Instalación <a name="instalacion"></a>
 
 1. **Clonar el repositorio**  
 ```bash
@@ -68,7 +124,7 @@ El Modelo UML de las clases principales se muestra en el siguiente diagrama merm
 - Se utiliza el comando "rails new LegalGratification" para inciar la aplicación ruby on rails, con todos los archivos que este comando trae por defecto.
 
 
-## Configuración
+## Configuración <a name="configuracion"></a>
 
 1. Ejecutar el comando 
 ```bash
@@ -85,7 +141,7 @@ rails db:create
 rails db:migrate
 ```
 
-## Configuración Específica de la Aplicación
+## Configuración Específica de la Aplicación <a name="configuracion-especifica"></a>
 
 
 1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio ${root}/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
@@ -169,7 +225,7 @@ rails db:migrate
                 - view_class: nombre de la clase que maneja la interacción con la vista del país.
                 - view_inputs: contiene las entradas que se le agregan a la clase que maneja la interacción con la vista del país, cuando esta se instancia (como diccionario).
 
-## Uso local
+## Uso local <a name="uso-local"></a>
 
 ### Mediante Comando Rails
 
