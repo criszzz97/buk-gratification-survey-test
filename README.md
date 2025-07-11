@@ -42,6 +42,125 @@
 
 El Modelo UML de las clases principales se muestra en el siguiente diagrama mermaid embebido:
 
+```mermaid
+classDiagram
+direction TB
+    class ApplicationController {
+    }
+
+    class View {
+	    + getView() : String
+    }
+
+    class CountryGratification {
+	    - code: String
+	    - name: String
+	    - viewHandler: View
+	    - gratificationImplementation: GeneralGratification
+	    - currency: String
+	    + initialize(currency : String, name : String, code: String, gratificationImplementation : GeneralGratification, viewHandler : View)
+	    + getName() : String
+	    + getView() : String
+	    + getDetails(input : any) : String
+	    + getCurrency() : String
+	    + getAmount(input : any) : Number
+    }
+
+    class GratificationCountryFactory {
+	    - implViewModuleName : Module
+	    - implModuleName : Module
+	    - factoriesCode : String
+	    - allCfg : Object
+	    - rawCfg : String
+	    + initialize()
+	    + build(countryCode : String) : CountryGratification
+    }
+
+    class ViewMexico {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class ViewChile {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class ViewColombia {
+	    - baseViewFilePath : String
+	    + initialize(baseViewFilePath : String)
+	    + getView() : String
+    }
+
+    class GeneralGratification {
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+    }
+
+    class MexicoGratification {
+	    - daysCountedInYear : Number
+	    - minimumDaysSalaryCountedInYear : Number
+	    + initialize(minimumDaysSalaryCountedInYear : Number, daysCountedInYear : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getGratification(dailySalary: Number, workedDaysYear : Number) : Number
+    }
+
+    class ChileGratification {
+	    - maximumMonthlyLegalRatio : Number
+	    - consideredMonths : Number
+	    - rationOfAnnualRemuneration : Number
+	    + initialize(ratioOfAnnualRemuneration : Number, consideredMonths : Number, maximumMonthlyLegalRatio : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getBaseGratification(monthlyBaseSalary : Number) : Number
+	    + getMinimumGratification(minimumMonthlyIncome : Number) : Number
+    }
+
+    class ColombiaGratification {
+	    - daysCountedInYear : Number
+	    + initialize(daysCountedInYear : Number)
+	    + getDetails(input : any) : String
+	    + getAmount(input : any) : Number
+	    + getGratification(monthlySalary : Number, workedDaysSemester : Number) : Number
+    }
+
+    class GratificationController {
+	    - factory: GratificationCountryFactory
+	    + generateFactory() : void
+	    + getDetails(params: any) : Json
+	    + getView(params: any) : Html
+    }
+
+    class SurveyController {
+	    allCfg : Object
+	    countryOptions : Object
+	    rawCfg : String
+	    + base_survey() : String
+    }
+
+	<<controller>> ApplicationController
+	<<abstract>> View
+	<<abstract>> GeneralGratification
+
+
+	ApplicationController <|-- GratificationController
+	ApplicationController <|-- SurveyController
+	GratificationController *..> GratificationCountryFactory : creates
+	GratificationController ..> CountryGratification : use
+    View <|-- ViewMexico
+    View <|-- ViewChile
+    View <|-- ViewColombia
+    CountryGratification *--> View : uses
+    CountryGratification *--> GeneralGratification : uses
+    GeneralGratification <|-- MexicoGratification
+    GeneralGratification <|-- ChileGratification
+    GeneralGratification <|-- ColombiaGratification
+    GratificationCountryFactory ..> CountryGratification : creates
+```
+
 
 ## Implementación <a name="implementacion"></a>
 
