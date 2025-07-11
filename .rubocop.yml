@@ -26,5 +26,12 @@ Style/RedundantReturn:
   Enabled: false
 
 Naming/MethodName:
-  Enabled: true
-  AllowedPattern: '^[a-z][A-Za-z0-9]*$'
+  Enabled: false
+
+# Turn off redundant-to_s
+Lint/RedundantStringCoercion:
+  Enabled: false
+
+# (Optional) Relax string-literal style
+Style/StringLiterals:
+  Enabled: false  
