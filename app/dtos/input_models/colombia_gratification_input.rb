@@ -11,5 +11,4 @@ module InputModels
         validates :monthly_salary,   numericality: { greater_than_or_equal_to: 0, message: "El salario mensual no puede ser menor a cero" }
 
     end
-
 end

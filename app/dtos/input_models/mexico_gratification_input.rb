@@ -11,5 +11,4 @@ module InputModels
         validates :daily_salary,   numericality: { greater_than_or_equal_to: 0, message: "El salario diario no puede ser menor a cero" }
 
     end
-
 end

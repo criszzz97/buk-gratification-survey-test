@@ -4,5 +4,4 @@ module InputModels
             valid? or raise ActiveModel::ValidationError.new(self)
         end    
     end
-
 end
