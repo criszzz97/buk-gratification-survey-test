@@ -220,14 +220,14 @@ end
     - Cada elemento de clase `form-group` debe tener lo siguiente `data-dynamic-field="true"`.
     - Cada elemento de clase `form-control` debe tener un id único que no se debe repetir en ninguna otra vista y debe tener lo siguiente `data-dynamic-input="true"`.
 
-- Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la visa "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos.
+- Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la vista "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos.
 
 ## Instalación <a name="instalacion"></a>
 
 1. **Clonar el repositorio**  
 ```bash
 git clone https://github.com/tu-org/LegalGratification.git
-cd LegalGratification
+cd buk-gratification-survey-test
 ```
 2. **Instalar dependencias Ruby**   
 ```bash
@@ -253,7 +253,7 @@ rails db:migrate
 
 ## Configuración Específica de la Aplicación <a name="configuracion-especifica"></a>
 
-1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio buk-gratification-survey-test/app/views/surveys. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
+1. Se deben tener creadas las vistas (activas) que se van a usar en cada país, estas vistas están presentes en el directorio buk-gratification-survey-test/app/views/survey. De forma inicial se tienen creadas vistas para Chile, Colombia y México.
 
 2. Se deben tener creadas las implementaciones (activas) de las gratificaciones en el directorio buk-gratification-survey-test/app/classes/gratification_implementations. De forma inicial se tienen creadas implementaciones de gratificaciones para Chile, Colombia y México. Estas están asociadas a vistas específicas.
 
@@ -346,7 +346,7 @@ rails server
 
 2. Posteriormente para acceder a la aplicación mediante se debe ingresar al enlace ``http://localhost:3000``.
 
-3. Para finalizar la ejecución del programa se debe ingresar CTRL+C en la terminal en la cual se ejecuto el proceso.
+3. Para finalizar la ejecución del programa se debe ingresar CTRL+C en la terminal en la cual se ejecuta el proceso.
 
 ### Mediante Dockers 
 
