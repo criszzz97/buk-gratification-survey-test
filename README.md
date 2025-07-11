@@ -1,6 +1,7 @@
 # README
 
 * Requerimientos:
+
 1. Crear un formulario dinamico, que cambie según del país escogido.
 2. Crear un método de cáclculo dinámico, cuyo resultado y cálculo cambie dinamicamente según el país escogido.
 
@@ -15,13 +16,17 @@
 
 * Se utilizó un simple factory para instanciar en tiempo de ejecución cada país con su implementación particular, además para este factory se utilizara reflexión para poder leer desde un archivo de configuración que clase se debe instanciar.
 
-* Ruby version
+* Setup Inicial
+    - Se utiliza ruby 3.4.4 x86_64-linux
+    - Se utiliza rails 8.0.2
+    - Se utiliza el editor de texto VScode 1.101.2
+    - Se utiliza Docker 28.0.1
+    - Se utiliza Node v20.8.0
 
-* System dependencies
+- Se utiliza el comando "rails new LegalGratification" para inciar la aplicación ruby on rails, con todos los archivos que este comando trae por defecto.
 
-* Configuration
 
-Este programa utiliza 
+* Configuración
 
 Para configurar este programa se debe tener lo siguiente:
 
@@ -45,16 +50,19 @@ Para configurar este programa se debe tener lo siguiente:
                 - view_class: nombre de la clase que maneja la interacción con la vista del país.
                 - view_inputs: contiene las entradas que se le agregan a la clase que maneja la interacción con la vista del país, cuando esta se instancia (como diccionario).
 
-* Database creation
-
-* Database initialization
-
 * How to run the test suite
 
 * Services (job queues, cache servers, search engines, etc.)
 
 * Deployment instructions
 
-Para ejecutar en forma local este archivo se puede utilizar rails s
+* Para ejecutar en forma local este archivo se puede realizar lo siguiente:
+
+- Se debe ingresar en el directorio rais del programa (legal-gratification) y se debe ejecutar el comando rails s.
+
+- Este programa al tener un Docker file asociado, significa que se puede crear una imagen Docker y se puede ejecutar un contenedor en base a esto. utilizar dockers para ejecutar este programa. Además al estar en docker su portabilidad es simple y se puede deployear como contenedor docker  mediante los siguientes comandos docker:
+
+
+docker run -p 3001:80 -e SECRET_KEY_BASE={{secret_key}}sha256:e43f3d847cc3fd6c0299eb99bba3aed0ee44cd03050073bbf3b3e3cc26ed95f3
 
 * ...
