@@ -27,7 +27,7 @@
 
 ## Descripción <a name="descripcion"></a>
 
-`LegalGratification` es una aplicación Rails que genera **formularios dinámicos** y **cálculos de gratificaciones** adaptados al país seleccionado. Emplea los principios SOLID, el patrón **Strategy** para desacoplar vistas y cálculos y utiliza el método **Simple Factory** basado en reflexión para instanciar la estrategia correcta según un archivo JSON de configuración. Esta se realiza específicamente para el test técnico de BUK.
+`LegalGratification` es una aplicación Rails que genera **formularios dinámicos** y **cálculos de gratificaciones** adaptados al país seleccionado. Emplea los principios SOLID, el patrón **Strategy** para desacoplar vistas y cálculos. Además utiliza el método **Simple Factory** basado en reflexión para instanciar la estrategia correcta según un archivo JSON de configuración. Esta se realiza específicamente para el test técnico de BUK.
 
 ## Requerimientos: <a name="requerimientos"></a>
 
@@ -164,9 +164,9 @@ direction TB
 
 ## Implementación <a name="implementacion"></a>
 
-- En este modelo se utiliza la clase `CountryGratification` para instancias objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
+- En este modelo se utiliza la clase `CountryGratification` para instanciar objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
 
-- Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país, para realizar esto se lee el archivo `config/factories.json`, todo esto en base al "código de país" recibido como input en la función `build`.
+- Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país. Para realizar esto se lee el archivo `config/factories.json`, Todo esto en base al "código de país" recibido como input en la función `build`.
 
 - Se cuenta con la clase abstracta `View` la cual se utiliza como intermediario entre la clase `CountryGratification` y las clases que implementan las vistas, esto mediante el método `getView`.
 
@@ -178,12 +178,12 @@ direction TB
 
 - Se cuenta con la clase `SurveyController`, la cual hereda de la clase `ApplicationController`. Esta recibe requerimmientos provenientes desde el endpoint  `survey` y se encarga de renderizar la primera vista al formulario mediante el método `base_survey`.
 
-- Se cuenta con la clase `GratificationController` la cual hereda de la clase `ApplicationController`. Esta se encarga de procesar requerimientos provenientes de los endpoints `gratification/survey/field` y `gratification/details`, los cuales entregan la vista de los campos  de entrada asociados a un país y procesan las gratificaciones respectivamente mediante los métodos `getView` y `getDetails` respectivamente.
+- Se cuenta con la clase `GratificationController` la cual hereda de la clase `ApplicationController`. Esta se encarga de procesar requerimientos provenientes de los endpoints `gratification/survey/field` y `gratification/details`, los cuales entregan la vista de los campos  de entrada asociados a un país y procesan las gratificaciones respectivamente mediante los métodos `getView` y `getDetails`.
 
 - Se tienen las siguientes rutas:
     - `survey`: Este endpoint de tipo get se usa para obtener la primera vista del formulario. Se configura además esta ruta como la url raíz.
     - `gratification/survey/fields`: Este endpoint de tipo get se utiliza para obtener los campos asociados a un país especifico, en base al query parameter `country` el cual contiene un código asociado a un país, consistente con el archivo `factories.json`.
-    - `gratification/details` : Este endpoint de tipo post se utiliza para realizar los cálculos de gratificaciones para cada país, en su cuerpo recibe un objeto JSON con las entradas ingresadas por el usuario (más el país ingresado en primera instancia) y retorna también un objeto JSON con el desglose del cáculo. Por ejemplo una llamada de red de este tipo tendría la siguiente forma.
+    - `gratification/details` : Este endpoint de tipo post se utiliza para realizar los cálculos de gratificaciones para cada país, en su cuerpo recibe un objeto JSON con las entradas ingresadas por el usuario (más el código de país ingresado en primera instancia) y retorna también un objeto JSON con el desglose del cáculo. Por ejemplo una llamada de red de este tipo tendría la siguiente forma.
 
 ```bash
 curl --location 'http://localhost:3000/gratification/details' \
@@ -192,6 +192,8 @@ curl --location 'http://localhost:3000/gratification/details' \
 --header 'X-CSRF-Token: {{X-CSRF-Token}}' \
 --data '{"input":{"monthly_base_salary":"2000000","minimum_monthly_income":"2000","country":"chile"}}'
 ```
+
+- La implemetación de las rutas se ve de la siguiente forma:
 
 ```ruby
 Rails.application.routes.draw do
@@ -353,7 +355,7 @@ rails server
 
 ### Mediante Dockers 
 
-1. Se debe crear la imagen (en base al archivo Dockerfile).
+1. Se debe crear la imagen (en base al archivo Dockerfile), ejecutando el siguiente comando en la raiz del programa mediante la terminal:
 
 ```bash
 docker build -t legal-gratification .
@@ -365,7 +367,13 @@ docker build -t legal-gratification .
 docker run --name test-legal-gratification-container -p 3000:80 -e SECRET_KEY_BASE={{tu_secret_key}} -d legal-gratification
 ```
 
-3. Finalmente para acceder a la aplicación se debe acceder al enlace ``http://localhost:3000``
+3. Luego para acceder a la aplicación se debe acceder al enlace ``http://localhost:3000``
+
+4. Para finalizar el proceso se debe utilizar el siguiente comando en la terminal:
+
+```bash
+docker stop test-legal-gratification-container
+```
 
 ## Despliegue en Render <a name="despliegue-render"></a>
 
