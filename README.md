@@ -31,7 +31,7 @@
 
 ## Requerimientos: <a name="requerimientos"></a>
 
-1. Crear un formulario dinámico, el cual debe cambiar según del país escogido.
+1. Crear un formulario dinámico, el cual debe cambiar según el país escogido.
 2. Crear un método de cáclculo dinámico, cuyo resultado y cálculo debe cambiar dinámicamente según el país escogido.
 
 ## Diseño y Arquitectura <a name="diseno-y-arquitectura"></a>
@@ -362,9 +362,7 @@ docker build -t legal-gratification .
 2. Posteriormente se debe ejecutar un contenedor en base a la imagen creada anteriormente.
 
 ```bash
-docker run -p 3000:80 \
-  -e SECRET_KEY_BASE=<tu_secret_key> \
-  legal-gratification
+docker run --name test-legal-gratification-container -p 3000:80 -e SECRET_KEY_BASE={{tu_secret_key}} -d legal-gratification
 ```
 
 3. Finalmente para acceder a la aplicación se debe acceder al enlace ``http://localhost:3000``
@@ -377,7 +375,7 @@ docker run -p 3000:80 \
 
 3. Una vez revisada la configuración, se debe seleccionar la opción deploy, lo cual va a finalmente desplegar la aplicación.
 
-actualmente la aplicación fue desplegada con este método y se encuentra en el siguiente enlace:
+* actualmente la aplicación fue desplegada con este método y se encuentra en el siguiente enlace (al ser un despliegue gratuito y de ejemplo puede que no funcione muy bien o en ciertos momentos se caiga):
 
 [https://buk-gratification-survey-test.onrender.com/](https://buk-gratification-survey-test.onrender.com/)
 
