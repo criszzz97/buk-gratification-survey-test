@@ -1,4 +1,5 @@
 class SurveyController < ApplicationController
+  # Esta funcion del controlador permite redirigir la ruta "survey" (raiz) y renderizar la vista base del formulario.
   def base_survey
     @rawCfg = File.read(Rails.root.join('config', 'factories.json'))
     @allCfg = JSON.parse(@rawCfg, symbolize_names: true)

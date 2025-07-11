@@ -1,4 +1,7 @@
 class GraficationCountryFactory
+  # Este contructor inicializa la Clase Factory, con este metodo sobre todo se asignan los atributos de la clase.
+  # La caracteristica mas importante de este metodo es que este lee el archivo de configuracion "factories.json", en base
+  # al cual se instancian dinamicamente los distintos objetos que esta clase creara.
   def initialize
     @rawCfg = File.read(Rails.root.join('config', 'factories.json'))
     @allCfg = JSON.parse(@rawCfg, symbolize_names: true)
@@ -7,6 +10,8 @@ class GraficationCountryFactory
     @viewModuleName = Object.const_get("ViewClasses")
   end  
 
+  # Este metodo instancia de forma dinamica el pais correspondiente segun la entrada "countryCode", 
+  # donde ademas en esta funcion se le inyectan las dependencias de implentacion y vista segun el archivo de configuracion "factories.json"
   def build(countryCode)
     countryCfg = @allCfg[countryCode.to_sym || "chile"] 
     factories = countryCfg[@factoriesCode.to_sym]
