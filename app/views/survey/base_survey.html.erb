@@ -1,8 +1,8 @@
 <!-- app/views/surveys/_form.html.erb -->
 <h1>Cálculo de Gratificaciones</h1>
 <form action="<%= base_survey_path %>" method="get" id="survey-form">
-<div id="alerts-container">
-</div>
+  <div id="alerts-container">
+  </div>
   <div class="form-group">
     <label for="country-select">País del colaborador</label>
     <select id="country-select" name="survey[country]" class="form-control" required>
@@ -29,6 +29,7 @@
 </form>
 
 <script>
+  //this event is generated when a country is selected
   document.addEventListener("DOMContentLoaded", () => {
     const countrySelect = document.getElementById("country-select");
     const dynamicFieldToFill = document.getElementById("dynamic-fields");
@@ -42,17 +43,18 @@
       resultContainer.style.display = 'none';
 
       country = this.value;
-      setResultValues()
+      setResultValues();
 
-      calculateButton.disabled = !country
+      calculateButton.disabled = !country;
 
       if (!country) {
-        dynamicFieldToFill.innerHTML = ""
-        console.log("No country was selected")
-        return
+        dynamicFieldToFill.innerHTML = "";
+        console.log("No country was selected");
+        return;
       }
 
       console.log("selected country:", country);
+      //this call return the input fields of a country
       fetch(
         `<%= survey_gratification_path %>?country=${encodeURIComponent(country)}`,
         { headers: { "Accept": "text/html" } }
@@ -65,60 +67,74 @@
     });
 
 
+    //this event is generated when the button is pressed
     calculateButton.addEventListener("click", (event) => {
       clearAlerts();
 
-      
-      // If you want to stop the form from actually submitting,
-      // uncomment the next line:
       event.preventDefault();
 
       console.log("Calculate button was pressed!");
 
-      const inputData = Array.from(document.querySelectorAll("[data-dynamic-input]")).map(e => ({id:e.id,name:e.name,value:e.value.trim()}))
+      const inputData = Array.from(document.querySelectorAll("[data-dynamic-input]")).map(e => ({ id: e.id, name: e.name, value: e.value.trim() }));
 
-      
-      const validationResult = validateInputData(inputData)
+      const validationResult = validateInputData(inputData);
 
-      if(!validationResult.valid) {
+      if (!validationResult.valid) {
         showAlerts(validationResult.errors);
-        console.error(validationResult)
-        return
+        console.error(validationResult);
+        return;
       }
-      
+
       const input = inputData.reduce((acc, currentValue) => {
         acc[currentValue.name] = currentValue.value
         return acc
       }, {});
 
       input["country"] = country;
-      console.log({ input })
+      console.log({ input });
 
       let details = "";
       let amount = "";
       let currency = "";
 
+      //this call calculate the gratification
       fetch(`<%= calculate_gratification_path %>`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',       
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'X-CSRF-Token': csrfToken 
+          'X-CSRF-Token': csrfToken
         },
-        body: JSON.stringify({input})               
+        body: JSON.stringify({ input })
       })
-        .then(response => {
+        .then(async response => {
+
+          if (response.status === 422) {
+            const payload = await response.json();
+            throw new ValidationError(payload?.validationErrors || {});
+          }
+
           if (!response.ok) throw new Error(response.statusText);
-          return response.json();                   
+
+          return await response.json();
         })
         .then(data => {
           console.log('Got back:', data);
-          details = data?.data?.details;
-          amount = data?.data?.amount;
-          currency = data?.data?.currency;
-          setResultValues(details,amount,currency)
+          setResultValues(data?.data?.details, data?.data?.amount, data?.data?.currency);
         })
         .catch(err => {
+          if (err instanceof ValidationError) {
+            const validationErrors = [];
+            Object.values(err?.errors || {}).forEach((value) => {
+              if (!value?.[0]) {
+                return;
+              }
+              validationErrors.push(value[0]);
+            });
+            console.error('Validation failed:', err?.errors || {});
+            showAlerts(validationErrors);
+            return;
+          }
           console.error('The input couldnt be loaded: ', err);
         });
 
@@ -129,29 +145,29 @@
   });
 
   function validateInputData(input) {
-    const errors = []
+    const errors = [];
     input.forEach(e => {
-      const element = document.getElementById(e.id)
-      if(!e?.value) {
-        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede estar vacio`)
+      const element = document.getElementById(e.id);
+      if (!e?.value) {
+        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede estar vacio`);
         return;
       }
 
-      if(Number(e.value) <= 0) {
-        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede tener un valor menor a cero`)
+      if (Number(e.value) <= 0) {
+        errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede tener un valor menor a cero`);
         return;
-      } 
+      }
     })
 
-    if(errors.length) {
-      return {valid:false,errors}
+    if (errors.length) {
+      return { valid: false, errors };
     }
 
-    return {valid:true,errors:[]}
+    return { valid: true, errors: [] };
 
   }
 
-  function setResultValues(detail,amount,currency) {
+  function setResultValues(detail, amount, currency) {
     const resultFieldDetails = document.getElementById("result-field-detail");
     const resultFieldAmount = document.getElementById("result-field-amount");
     const resultFieldCurrency = document.getElementById("result-field-currency");
@@ -161,21 +177,21 @@
 
   }
 
-  function clearAlerts(alertContainerName='alerts-container') {
+  function clearAlerts(alertContainerName = 'alerts-container') {
     const container = document.getElementById(alertContainerName);
     container.innerHTML = '';
     container.style.display = 'none';
   }
 
-  function showAlerts(messages,alertContainerName='alerts-container') {
+  function showAlerts(messages, alertContainerName = 'alerts-container') {
     const container = document.getElementById(alertContainerName);
 
     // clear out any old alerts
     container.innerHTML = '';
-    setResultValues()
+    setResultValues();
 
     messages.forEach(msg => {
-      // build <div class="alert alert-danger"><div>msg</div></div>
+      // create alerts
       const alertWrapper = document.createElement('div');
       alertWrapper.classList.add('alert', 'alert-danger');
 
@@ -186,5 +202,13 @@
       container.appendChild(alertWrapper);
     });
     container.style.display = 'block';
+  }
+
+  class ValidationError extends Error {
+    constructor(errors) {
+      super("Validation failed");
+      this.name = "ValidationError";
+      this.errors = errors;
+    }
   }
 </script>

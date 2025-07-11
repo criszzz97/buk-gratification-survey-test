@@ -27,9 +27,7 @@ module GratificationImplementations
 
         end    
         def getDetails(input)
-            if !input.key?(:monthly_base_salary) or !input.key?(:minimum_monthly_income)
-                raise "Either The \"monthly base salary\" or the \"minimum monthly income\" was not received correctly"
-            end
+            self.validateInput(input)
             monthlyBaseSalary = (input[:monthly_base_salary]).to_f
             minimumMonthlyIncome = (input[:minimum_monthly_income]).to_f
             percentageStr = (100*@ratioOfAnnualRemuneration).to_s
@@ -39,9 +37,7 @@ module GratificationImplementations
         end
 
         def getAmount(input)
-            if !input.key?(:monthly_base_salary) or !input.key?(:minimum_monthly_income)
-                raise "Either The \"monthly base salary\" or the \"minimum monthly income\" was not received correctly"
-            end
+            self.validateInput(input)
             monthlyBaseSalary = (input[:monthly_base_salary]).to_f
             minimumMonthlyIncome = (input[:minimum_monthly_income]).to_f
             baseGratification = self.getBaseGratification(monthlyBaseSalary)
@@ -56,6 +52,11 @@ module GratificationImplementations
 
         def getMinimumGratification(minimumMonthlyIncome)
             return minimumMonthlyIncome*@maximumMonthlyLegalRatio
-        end    
+        end
+
+        def validateInput(input)
+            inputDto = ::InputModels::ChileGratificationInput.new(monthly_base_salary:input[:monthly_base_salary],minimum_monthly_income:input[:minimum_monthly_income])
+            inputDto.validate!
+        end   
     end
 end
