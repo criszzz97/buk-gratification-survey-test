@@ -10,11 +10,15 @@ class GratificationController < ApplicationController
 
 
   def getDetails
-    inputParam = params.require(:input)
-    countryParam = inputParam.require(:country)
-    return head :not_found unless countryParam
-    country = @factory.build(countryParam)
-    render json: {data: {details:country.getDetails(inputParam),currency:country.getCurrency,amount:country.getAmount(inputParam)}}
+    begin
+      inputParam = params.require(:input)
+      countryParam = inputParam.require(:country)
+      return head :not_found unless countryParam
+      country = @factory.build(countryParam)
+      render json: {data: {details:country.getDetails(inputParam),currency:country.getCurrency,amount:country.getAmount(inputParam)}}
+      rescue ActiveModel::ValidationError => e
+        render json: { validationErrors: e.model.errors.messages }, status: :unprocessable_entity
+    end  
   end
 
   def generateFactory

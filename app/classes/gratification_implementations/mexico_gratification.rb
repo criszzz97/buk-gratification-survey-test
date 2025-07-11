@@ -18,9 +18,7 @@ module GratificationImplementations
         end
 
         def getDetails(input)
-            if !input.key?(:daily_salary) or !input.key?(:worked_days_year)
-                raise "Either the \"daily salary\" or the \"worked days in the year\" was not received correctly"
-            end
+            self.validateInput(input)
             dailySalary = (input[:daily_salary]).to_f
             dailySalaryStr =(dailySalary.to_i).to_s
             workedDaysYear = (input[:worked_days_year]).to_f
@@ -31,9 +29,7 @@ module GratificationImplementations
         end
 
         def getAmount(input)
-            if !input.key?(:daily_salary) or !input.key?(:worked_days_year)
-                raise "Either the \"daily salary\" or the \"worked days in the year\" was not received correctly"
-            end
+            self.validateInput(input)
             dailySalary = (input[:daily_salary]).to_f
             workedDaysYear = (input[:worked_days_year]).to_f
             return self.getGratification(dailySalary,workedDaysYear)
@@ -41,6 +37,11 @@ module GratificationImplementations
 
         def getGratification(dailySalary,workedDaysYear)
             return (dailySalary*@minimumDaysSalaryCountedInYear*(workedDaysYear/@daysCountedInYear)).to_i
-        end   
+        end 
+        
+        def validateInput(input)
+            inputDto = ::InputModels::MexicoGratificationInput.new(daily_salary:input[:daily_salary],worked_days_year:input[:worked_days_year])
+            inputDto.validate!
+        end  
     end
 end
