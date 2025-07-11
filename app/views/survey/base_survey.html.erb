@@ -153,7 +153,7 @@
         return;
       }
 
-      if (Number(e.value) <= 0) {
+      if (Number(e.value) < 0) {
         errors.push(`El campo "${element?.previousElementSibling?.textContent || ""}" no puede tener un valor menor a cero`);
         return;
       }
