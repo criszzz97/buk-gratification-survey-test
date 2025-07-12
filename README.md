@@ -14,6 +14,7 @@
 - [Configuración Específica de la Aplicación](#configuracion-especifica)  
 - [Uso local](#uso-local)  
 - [Despliegue en Render](#despliegue-render)  
+- [Anexo](#anexo)  
 
 
 ---
@@ -40,7 +41,7 @@
 - Se utiliza el patrón **Strategy** para cambiar las vistas (`View`) y las lógica de gratificación (`GeneralGratification`) en tiempo de ejecución.  
 - Se aplica un **Simple Factory** (`GratificationCountryFactory`) con reflexión para leer `config/factories.json` y crear instancias de forma dinámica.
 
-El Modelo UML de las clases principales se muestra en el siguiente diagrama mermaid embebido:
+* El Modelo UML de las clases principales se muestra en el siguiente diagrama mermaid embebido:
 
 ```mermaid
 classDiagram
@@ -161,6 +162,40 @@ direction TB
     GratificationCountryFactory ..> CountryGratification : creates
 ```
 
+* Por otro lado el diagrama de secuencia conceptual se muestra en el siguiente diagrama mermaid embebido:
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Factory
+    participant CountryGratification
+
+    Note over User, Frontend: 1. Usuario elige país
+    User->>Frontend: Selecciona país (e.g. "chile")
+    Frontend->>Backend: GET /gratification/survey/fields?country=chile
+    Backend->>Factory: build("chile")
+    Factory-->>Backend: nueva instancia CountryGratification
+    Backend->>CountryGratification: getView()
+    CountryGratification-->>Backend: HTML de campos
+    Backend-->>Frontend: 200 OK + HTML dinámico
+    Frontend-->>User: Renderiza campos
+
+    Note over User, Frontend: 2. Usuario llena y envía formulario
+    User->>Frontend: Click "Calcular"
+    Frontend->>Backend: POST /gratification/details { input: {..., country: "chile"} }
+    Backend->>Factory: build("chile")
+    Factory-->>Backend: instancia CountryGratification
+    Backend->>CountryGratification: getDetails(input)
+    CountryGratification-->>Backend: detalles de cálculo
+    Backend->>CountryGratification: getAmount(input)
+    CountryGratification-->>Backend: monto calculado
+    Backend->>CountryGratification: getCurrency()
+    CountryGratification-->>Backend: moneda asociada al país
+    Backend-->>Frontend: 200 OK + JSON { data: { details, amount, currency } }
+    Frontend-->>User: Muestra resultados
+```
 
 ## Implementación <a name="implementacion"></a>
 
@@ -220,7 +255,7 @@ end
     - Cada elemento de clase `form-group` debe tener lo siguiente `data-dynamic-field="true"`.
     - Cada elemento de clase `form-control` debe tener un id único que no se debe repetir en ninguna otra vista y debe tener lo siguiente `data-dynamic-input="true"`.
 
-- Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la vista "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos.
+- Además se implemento una vista de nombre `base_survey.html.erb`, la cual correponde a la vista "raíz" del formulario. Esta vista se encarga de recbir los campos dinámicamente de cada país según lo que el usuario selecciona en primera instancia, esto mediante el endpoint `gratification/survey/fields`. También se encarga de realizar llamadas de red al endpoint de procesamiento `gratification/details`, cuando se presiona el botón "Calcular". Además se encarga de realizar validaciones de datos. El código de esta sección es relativamente simple y esta asociado a la visualización del formulario.
 
 ## Instalación <a name="instalacion"></a>
 
@@ -381,6 +416,10 @@ docker stop test-legal-gratification-container
 * actualmente la aplicación fue desplegada con este método y se encuentra en el siguiente enlace (al ser un despliegue gratuito y de ejemplo puede que no funcione muy bien o en ciertos momentos se caiga):
 
 [https://buk-gratification-survey-test.onrender.com/](https://buk-gratification-survey-test.onrender.com/)
+
+## Anexo <a name="anexo"></a>
+
+- También puede ver una documentación realizada mediante Deepwiki en el enlace [https://deepwiki.com/criszzz97/buk-gratification-survey-test/](https://deepwiki.com/criszzz97/buk-gratification-survey-test/)
 
 
 
