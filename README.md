@@ -416,6 +416,10 @@ docker stop test-legal-gratification-container
 
 [https://buk-gratification-survey-test.onrender.com/](https://buk-gratification-survey-test.onrender.com/)
 
+## Anexo
+
+- También puede ver una documentación realizada mediante Deepwiki en el enlace [https://deepwiki.com/criszzz97/buk-gratification-survey-test/](https://deepwiki.com/criszzz97/buk-gratification-survey-test/)
+
 
 
 
