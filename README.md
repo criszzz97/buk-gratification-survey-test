@@ -14,6 +14,7 @@
 - [Configuración Específica de la Aplicación](#configuracion-especifica)  
 - [Uso local](#uso-local)  
 - [Despliegue en Render](#despliegue-render)  
+- [Anexo](#anexo)  
 
 
 ---
@@ -416,7 +417,7 @@ docker stop test-legal-gratification-container
 
 [https://buk-gratification-survey-test.onrender.com/](https://buk-gratification-survey-test.onrender.com/)
 
-## Anexo
+## Anexo <a name="anexo"></a>
 
 - También puede ver una documentación realizada mediante Deepwiki en el enlace [https://deepwiki.com/criszzz97/buk-gratification-survey-test/](https://deepwiki.com/criszzz97/buk-gratification-survey-test/)
 
