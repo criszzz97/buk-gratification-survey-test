@@ -356,10 +356,10 @@ rails server
 docker build -t legal-gratification .
 ```
 
-2. Posteriormente se debe ejecutar un contenedor en base a la imagen creada anteriormente.
+2. Posteriormente se debe ejecutar un contenedor en base a la imagen creada anteriormente (utlizado el ambiente development y la llave generada con el comando rails secret).
 
 ```bash
-docker run --name test-legal-gratification-container -p 3000:80 -e SECRET_KEY_BASE={{tu_secret_key}} -d legal-gratification
+docker run --name test-legal-gratification-container -p 3000:80 -e SECRET_KEY_BASE={{tu_secret_key}} -e RAILS_ENV=development -d legal-gratification
 ```
 
 3. Luego para acceder a la aplicación se debe acceder al enlace ``http://localhost:3000``
