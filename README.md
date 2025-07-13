@@ -12,7 +12,8 @@
 - [Instalación](#instalacion)  
 - [Configuración](#configuracion)  
 - [Configuración Específica de la Aplicación](#configuracion-especifica)  
-- [Uso local](#uso-local)  
+- [Uso local](#uso-local)
+- [Tests](#tests)  
 - [Despliegue en Render](#despliegue-render)  
 - [Anexo](#anexo)  
 
@@ -403,6 +404,24 @@ docker run --name test-legal-gratification-container -p 3000:80 -e SECRET_KEY_BA
 
 ```bash
 docker stop test-legal-gratification-container
+```
+
+## Tests <a name="tests"></a>
+
+* Para este proyecto se agregaron varios test, mayormente unitarios, los cuales se encuentran en el directorio buk-gratification-survey-test/test/lib.
+
+* Para ejecutar los tests se debe ejecutar el siguiente comando en la raiz del programa:
+
+```bash
+rails test
+```
+
+* Si todo va bien con los test se debería mostrar en un mensaje que todos los tests fueron finalizados sin errores, fallas ni omisiones.
+
+* Además se puede ejecutar cada test por separado mediante el siguiente formato de comandos:
+
+```bash
+rails test test/lib/{path_to_test_file}
 ```
 
 ## Despliegue en Render <a name="despliegue-render"></a>
