@@ -440,6 +440,48 @@ rails test test/lib/{path_to_test_file}
 
 - También puede ver una documentación realizada mediante Deepwiki en el enlace [https://deepwiki.com/criszzz97/buk-gratification-survey-test/](https://deepwiki.com/criszzz97/buk-gratification-survey-test/)
 
+- Si es que el archivo de configuración ``factories,json`` se desease pasar a un base de datos estructurada, el modelo de datos que debiese tener esa estructura de datos sería la que se aprecia en el siguiente diagrama mermaid embebido:
+
+```mermaid
+erDiagram
+    COUNTRIES {
+      SERIAL  id PK
+      STRING  name
+      STRING  code
+      STRING  currency
+    }
+    FACTORIES {
+      SERIAL id PK
+      DATETIME created_at
+      INTEGER country_id FK
+      INTEGER version
+      BOOLEAN is_active
+    }
+    CONFIGURATION_CLASSES {
+      SERIAL id PK
+      INTEGER name
+      INTEGER type_id FK
+      INTEGER factory_id FK
+    }
+    CONFIGURATION_INPUTS {
+      SERIAL id PK
+      STRING  name
+      INTEGER class_id FK
+    }
+    TYPES {
+      SERIAL id PK
+      STRING  name
+    }
+
+    COUNTRIES ||--o{ FACTORIES  : "country_id"
+    FACTORIES ||--o{ CONFIGURATION_CLASSES  : "factory_id"
+    CONFIGURATION_CLASSES ||--o{ CONFIGURATION_INPUTS   : "class_id"
+    TYPES  ||--o{ CONFIGURATION_CLASSES   : “type_id”
+```
+
+
+
+
 
 
 
