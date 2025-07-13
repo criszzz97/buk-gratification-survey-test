@@ -440,7 +440,7 @@ rails test test/lib/{path_to_test_file}
 
 - También puede ver una documentación realizada mediante Deepwiki en el enlace [https://deepwiki.com/criszzz97/buk-gratification-survey-test/](https://deepwiki.com/criszzz97/buk-gratification-survey-test/)
 
-- Si es que el archivo de configuración ``factories,json`` se desease pasar a un base de datos estructurada, el modelo de datos que debiese tener esa estructura de datos sería la que se aprecia en el siguiente diagrama mermaid embebido:
+- Si es que el archivo de configuración ``factories.json`` se desease pasar a un base de datos estructurada, el modelo de datos que debiese tener esa estructura de datos sería la que se aprecia en el siguiente diagrama mermaid embebido:
 
 ```mermaid
 erDiagram
