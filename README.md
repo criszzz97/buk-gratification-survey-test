@@ -199,6 +199,8 @@ sequenceDiagram
 
 ## Implementación <a name="implementacion"></a>
 
+- Los archivos creados y modificados se encuentran en la carpeta buk-gratification-survey-test/app, sobre todo en los subdirectorios `classes`, `classes/gratification_implementations`,`classes/view_classes`, `dtos/input_models`, `controllers`, `views` y `views/survey`. Además las rutas de los endpoints se agregaron en el archivo config.ru.
+
 - En este modelo se utiliza la clase `CountryGratification` para instanciar objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
 
 - Se cuenta con la clase `GraficationCountryFactory` la cual aplica el método factory para instanciar en tiempo de ejecución un país específico, además se encarga de inyectar las dependencias necesarias para la creación del país. Para realizar esto se lee el archivo `buk-gratification-survey-test/config/factories.json`, Todo esto en base al "código de país" recibido como input en la función `build`.
@@ -261,7 +263,7 @@ end
 
 1. **Clonar el repositorio**  
 ```bash
-git clone https://github.com/tu-org/LegalGratification.git
+git clone https://github.com/criszzz97/buk-gratification-survey-test.git
 cd buk-gratification-survey-test
 ```
 2. **Instalar dependencias Ruby**   
