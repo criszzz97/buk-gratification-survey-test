@@ -199,7 +199,7 @@ sequenceDiagram
 
 ## Implementación <a name="implementacion"></a>
 
-- Los archivos creados y modificados se encuentran en la carpeta buk-gratification-survey-test/app, sobre todo en los subdirectorios `classes`, `classes/gratification_implementations`,`classes/view_classes`, `dtos/input_models`, `controllers`, `views` y `views/survey`. Además las rutas de los endpoints se agregaron en el archivo config.ru.
+- Los archivos creados y modificados se encuentran en la carpeta buk-gratification-survey-test/app, sobre todo en los subdirectorios `classes`, `classes/gratification_implementations`,`classes/view_classes`, `dtos/input_models`, `controllers`, `views` y `views/survey`. Además las rutas de los endpoints se agregaron en el archivo buk-gratification-survey-test/config/routes.rb.
 
 - En este modelo se utiliza la clase `CountryGratification` para instanciar objetos de tipo "País", esta clase se encarga de instanciar datos cuya estructura es comun para cada país, como por ejemplo la moneda y el nombre.
 
